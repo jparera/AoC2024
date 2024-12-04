@@ -11,26 +11,16 @@ public class Day04 {
             char[][] map = lines.map(String::toCharArray).toArray(char[][]::new);
             var cols = map.length;
             var rows = map[0].length;
-            //
-            // Part 1
-            //
-            int count1 = 0;
+            int part1 = 0;
+            int part2 = 0;
             for (int r = 0; r < rows; r++) {
                 for (int c = 0; c < cols; c++) {
-                    count1 += xmas(0, r, c, map);
+                    part1 += xmas(r, c, map);
+                    part2 += crossmas(r, c, map);
                 }
             }
-            System.out.println(count1);
-            //
-            // Part 2
-            //
-            int count2 = 0;
-            for (int r = 0; r < rows; r++) {
-                for (int c = 0; c < cols; c++) {
-                    count2 += crossmas(r, c, map);
-                }
-            }
-            System.out.println(count2);
+            System.out.println(part1);
+            System.out.println(part2);
         }
     }
 
@@ -65,13 +55,13 @@ public class Day04 {
             { 1, -1 }, { 1, 0 }, { 1, 1 },
     };
 
-    private static int xmas(int l, int r, int c, char[][] map) {
-        if (map[r][c] != XMAS[l]) {
+    private static int xmas(int r, int c, char[][] map) {
+        if (map[r][c] != XMAS[0]) {
             return 0;
         }
         int count = 0;
         for (var offset : OFFSETS) {
-            count += search(l + 1, r + offset[0], c + offset[1], offset, map);
+            count += search(1, r + offset[0], c + offset[1], offset, map);
         }
         return count;
     }
