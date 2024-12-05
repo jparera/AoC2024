@@ -21,31 +21,35 @@ public class Day05 {
 
         try (var lines = Files.lines(input)) {
             var it = lines.iterator();
-
-            var rules = new HashMap<Integer, Set<Integer>>();
+            // Rules
+            var lt = new HashMap<Integer, Set<Integer>>();
+            var gt = new HashMap<Integer, Set<Integer>>();
             while (it.hasNext()) {
                 var line = it.next();
                 if (line.isEmpty()) {
                     break;
                 }
                 var rule = numbers(line).toArray();
-                rules.computeIfAbsent(rule[0], _ -> new HashSet<Integer>()).add(rule[1]);
+                lt.computeIfAbsent(rule[0], _ -> new HashSet<Integer>()).add(rule[1]);
+                gt.computeIfAbsent(rule[1], _ -> new HashSet<Integer>()).add(rule[0]);
             }
-
+            // Updates
             var updates = new ArrayList<int[]>();
             it.forEachRemaining(line -> {
                 updates.add(lineToUpdate(line));
             });
+            // Solutions
+            var sort = sortFunction(lt, gt);
 
             int part1 = updates.stream()
-                    .filter(isRightOrderPredicate(rules))
+                    .filter(isRightOrderPredicate(sort))
                     .mapToInt(Day05::middle)
                     .sum();
             System.out.println(part1);
 
             int part2 = updates.stream()
-                    .filter(Predicate.not(isRightOrderPredicate(rules)))
-                    .map(sortFunction(rules))
+                    .filter(Predicate.not(isRightOrderPredicate(sort)))
+                    .map(sort)
                     .mapToInt(Day05::middle)
                     .sum();
             System.out.println(part2);
@@ -56,24 +60,25 @@ public class Day05 {
         return numbers(line).toArray();
     }
 
-    private static Predicate<int[]> isRightOrderPredicate(Map<Integer, Set<Integer>> rules) {
-        var sort = sortFunction(rules);
+    private static Predicate<int[]> isRightOrderPredicate(Function<int[], int[]> sort) {
         return update -> {
             return Arrays.equals(update, sort.apply(update));
         };
     }
 
-    private static Function<int[], int[]> sortFunction(Map<Integer, Set<Integer>> rules) {
+    private static Function<int[], int[]> sortFunction(Map<Integer, Set<Integer>> lt, Map<Integer, Set<Integer>> gt) {
         return update -> {
             return IntStream.of(update).boxed()
                     .sorted((l, r) -> {
-                        var rr = rules.get(l);
-                        if (rr != null) {
-                            return rr.contains(r) ? -1 : 0;
-                        } else {
-                            var lr = rules.get(r);
-                            return lr != null && lr.contains(l) ? 1 : 0;
+                        var lt_l = lt.get(l);
+                        if (lt_l != null) {
+                            return lt_l.contains(r) ? -1 : 0;
                         }
+                        var gt_l = gt.get(l);
+                        if (gt_l != null) {
+                            return gt_l.contains(r) ? 1 : 0;
+                        }
+                        return 0;
                     })
                     .mapToInt(Integer::intValue).toArray();
         };
