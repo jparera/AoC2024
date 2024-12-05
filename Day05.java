@@ -68,20 +68,46 @@ public class Day05 {
 
     private static Function<int[], int[]> sortFunction(Map<Integer, Set<Integer>> lt, Map<Integer, Set<Integer>> gt) {
         return update -> {
-            return IntStream.of(update).boxed()
-                    .sorted((l, r) -> {
-                        var lt_l = lt.get(l);
-                        if (lt_l != null && lt_l.contains(r)) {
-                            return -1;
-                        }
-                        var gt_l = gt.get(l);
-                        if (gt_l != null && gt_l.contains(r)) {
-                            return 1;
-                        }
-                        return 0;
-                    })
-                    .mapToInt(Integer::intValue).toArray();
+            var len = update.length;
+            update = Arrays.copyOf(update, len);
+            for (int i = 1; i < len; i++) {
+                if (lt.get(update[i]) == null && gt.get(update[i]) == null) {
+                    continue;
+                }
+                int j = i;
+                int k = j - 1;
+                while (j >= 0 && k >= 0) {
+                    if (!hasRule(update[j], update[k], lt, gt)) {
+                        k--;
+                    } else if (compare(update[j], update[k], lt, gt) < 0) {
+                        int tmp = update[j];
+                        update[j] = update[k];
+                        update[k] = tmp;
+                        j = k;
+                        k = j - 1;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            return update;
         };
+    }
+
+    private static boolean hasRule(int l, int r, Map<Integer, Set<Integer>> lt, Map<Integer, Set<Integer>> gt) {
+        return lt.getOrDefault(l, Set.of()).contains(r) || gt.getOrDefault(l, Set.of()).contains(r);
+    }
+
+    private static int compare(int l, int r, Map<Integer, Set<Integer>> lt, Map<Integer, Set<Integer>> gt) {
+        var lt_l = lt.get(l);
+        if (lt_l != null && lt_l.contains(r)) {
+            return -1;
+        }
+        var gt_l = gt.get(l);
+        if (gt_l != null && gt_l.contains(r)) {
+            return 1;
+        }
+        throw new IllegalStateException();
     }
 
     private static int middle(int[] update) {
