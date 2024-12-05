@@ -71,12 +71,12 @@ public class Day05 {
             return IntStream.of(update).boxed()
                     .sorted((l, r) -> {
                         var lt_l = lt.get(l);
-                        if (lt_l != null) {
-                            return lt_l.contains(r) ? -1 : 0;
+                        if (lt_l != null && lt_l.contains(r)) {
+                            return -1;
                         }
                         var gt_l = gt.get(l);
-                        if (gt_l != null) {
-                            return gt_l.contains(r) ? 1 : 0;
+                        if (gt_l != null && gt_l.contains(r)) {
+                            return 1;
                         }
                         return 0;
                     })
