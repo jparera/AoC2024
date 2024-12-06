@@ -7,23 +7,23 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import util.Lines;
 import util.Numbers;
 import util.Sets;
-import util.Strings;
 
 public class Day05 {
     public static void main(String[] args) throws IOException {
-        var input = Path.of("input.txt");
-        var blocks = Strings.blocks(input);
+        var input = Path.of("input05.txt");
+        var blocks = Lines.asBlocks(input);
         // Rules
         var lt = new HashMap<Integer, Set<Integer>>();
         var gt = new HashMap<Integer, Set<Integer>>();
-        for (var rule : Numbers.array(blocks.get(0))) {
+        for (var rule : Numbers.asIntArrays(blocks.get(0))) {
             lt.computeIfAbsent(rule[0], Sets::computeHashSet).add(rule[1]);
             gt.computeIfAbsent(rule[1], Sets::computeHashSet).add(rule[0]);
         }
         // Updates
-        var updates = Numbers.array(blocks.get(1));
+        var updates = Numbers.asIntArrays(blocks.get(1));
         // Solutions
         var sort = sortFunction(lt, gt);
 

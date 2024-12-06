@@ -4,7 +4,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import util.Strings;
+import util.Lines;
 
 public class Day03 {
     private static Pattern PART1 = Pattern.compile("mul\\((\\d{1,3}),(\\d{1,3})\\)");
@@ -12,9 +12,8 @@ public class Day03 {
     private static Pattern PART2 = Pattern.compile("do\\(\\)|don't\\(\\)|mul\\((\\d{1,3}),(\\d{1,3})\\)");
 
     public static void main(String[] args) throws IOException {
-        var path = Path.of("input.txt");
-
-        var lines = Strings.list(path);
+        var path = Path.of("input03.txt");
+        var lines = Lines.asStrings(path);
         //
         // Part 1
         //

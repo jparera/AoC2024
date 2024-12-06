@@ -1,13 +1,13 @@
 import java.io.IOException;
 import java.nio.file.Path;
 
-import util.Numbers;
+import util.Lines;
 
 public class Day02 {
     public static void main(String[] args) throws IOException {
-        var path = Path.of("input.txt");
+        var path = Path.of("input02.txt");
 
-        var lines = Numbers.array(path);
+        var lines = Lines.asNumberArrays(path);
 
         var part1 = lines.stream().map(Day02::part1).filter(v -> v).count();
         var part2 = lines.stream().map(Day02::part2).filter(v -> v).count();

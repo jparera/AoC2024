@@ -4,23 +4,23 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Set;
 
+import util.Lines;
 import util.Numbers;
 import util.Sets;
-import util.Strings;
 
 public class Day05Topological {
     public static void main(String[] args) throws IOException {
-        var input = Path.of("input.txt");
-        var blocks = Strings.blocks(input);
+        var input = Path.of("input05.txt");
+        var blocks = Lines.asBlocks(input);
         // Rules
         var out = new HashMap<Integer, Set<Integer>>();
         var in = new HashMap<Integer, Set<Integer>>();
-        for (var rule : Numbers.array(blocks.get(0))) {
+        for (var rule : Numbers.asIntArrays(blocks.get(0))) {
             out.computeIfAbsent(rule[0], Sets::computeHashSet).add(rule[1]);
             in.computeIfAbsent(rule[1], Sets::computeHashSet).add(rule[0]);
         }
         // Updates
-        var updates = Numbers.array(blocks.get(1));
+        var updates = Numbers.asIntArrays(blocks.get(1));
         // Topological sort
         int part1 = 0;
         int part2 = 0;

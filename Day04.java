@@ -1,14 +1,14 @@
 import java.io.IOException;
 import java.nio.file.Path;
 
-import util.Strings;
+import util.Lines;
 
 public class Day04 {
     private static final char[] XMAS = "XMAS".toCharArray();
 
     public static void main(String[] args) throws IOException {
-        var path = Path.of("input.txt");
-        var map = Strings.matrix(path);
+        var path = Path.of("input04.txt");
+        var map = Lines.asCharMatrix(path);
         var cols = map.length;
         var rows = map[0].length;
         int part1 = 0;

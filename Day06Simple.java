@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
 
-import util.Strings;
+import util.Lines;
 
 public class Day06Simple {
     private static final char GUARD = '^';
@@ -19,9 +19,8 @@ public class Day06Simple {
     };
 
     public static void main(String[] args) throws IOException {
-        var input = Path.of("input.txt");
-
-        var map = Strings.matrix(input);
+        var input = Path.of("input06.txt");
+        var map = Lines.asCharMatrix(input);
 
         int rows = map.length;
         int cols = map[0].length;

@@ -3,15 +3,15 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import util.Numbers;
+import util.Lines;
 
 public class Day01 {
     public static void main(String[] args) throws IOException {
-        var input = Path.of("input.txt");
+        var input = Path.of("input01.txt");
 
         var left = new ArrayList<Integer>();
         var right = new ArrayList<Integer>();
-        for (var line : Numbers.list(input)) {
+        for (var line : Lines.asNumberLists(input)) {
             left.add(line.get(0));
             right.add(line.get(1));
         }
