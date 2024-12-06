@@ -1,7 +1,8 @@
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+
+import util.Strings;
 
 public class Day06Simple {
     private static final char GUARD = '^';
@@ -20,82 +21,83 @@ public class Day06Simple {
     public static void main(String[] args) throws IOException {
         var input = Path.of("input.txt");
 
-        try (var lines = Files.lines(input)) {
-            var map = lines.map(String::toCharArray).toArray(char[][]::new);
+        var map = Strings.matrix(input);
 
-            int rows = map.length;
-            int cols = map[0].length;
+        int rows = map.length;
+        int cols = map[0].length;
 
-            int srow = 0;
-            int scol = 0;
-            int soffset = 0;
+        int srow = 0;
+        int scol = 0;
+        int soffset = 0;
 
-            for (int r = 0; r < rows; r++) {
-                for (int c = 0; c < cols; c++) {
-                    if (map[r][c] == GUARD) {
-                        srow = r;
-                        scol = c;
-                    }
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (map[r][c] == GUARD) {
+                    srow = r;
+                    scol = c;
                 }
             }
-
-            int row = srow;
-            int col = scol;
-            int offset = soffset;
-            var visited = new HashSet<Position>();
-            while (true) {
-                visited.add(new Position(row, col));
-                var o = OFFSETS[offset];
-                int nr = row + o[0];
-                int nc = col + o[1];
-                if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) {
-                    break;
-                }
-                if (map[nr][nc] == BLOCK) {
-                    offset = (offset + 1) % OFFSETS.length;
-                } else {
-                    row = nr;
-                    col = nc;
-                }
-            }
-            System.out.println(visited.size());
-
-            int loops = 0;
-            var states = new HashSet<State>();
-            for (int r = 0; r < rows; r++) {
-                for (int c = 0; c < cols; c++) {
-                    states.clear();
-                    if (map[r][c] == UNBLOCK) {
-                        map[r][c] = BLOCK;
-                        row = srow;
-                        col = scol;
-                        offset = soffset;
-                        while (true) {
-                            if (!states.add(new State(row, col, offset))) {
-                                loops++;
-                                break;
-                            }
-                            var o = OFFSETS[offset];
-                            int nr = row + o[0];
-                            int nc = col + o[1];
-                            if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) {
-                                break;
-                            }
-                            if (map[nr][nc] == BLOCK) {
-                                offset = (offset + 1) % OFFSETS.length;
-                            } else {
-                                row = nr;
-                                col = nc;
-                            }
-                        }
-                        map[r][c] = UNBLOCK;
-                    }
-                }
-            }
-            System.out.println(loops);
         }
+
+        int row = srow;
+        int col = scol;
+        int offset = soffset;
+        var visited = new HashSet<Position>();
+        while (true) {
+            visited.add(new Position(row, col));
+            var o = OFFSETS[offset];
+            int nr = row + o[0];
+            int nc = col + o[1];
+            if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) {
+                break;
+            }
+            if (map[nr][nc] == BLOCK) {
+                offset = (offset + 1) % OFFSETS.length;
+            } else {
+                row = nr;
+                col = nc;
+            }
+        }
+        System.out.println(visited.size());
+
+        int loops = 0;
+        var states = new HashSet<State>();
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                states.clear();
+                if (map[r][c] == UNBLOCK) {
+                    map[r][c] = BLOCK;
+                    row = srow;
+                    col = scol;
+                    offset = soffset;
+                    while (true) {
+                        if (!states.add(new State(row, col, offset))) {
+                            loops++;
+                            break;
+                        }
+                        var o = OFFSETS[offset];
+                        int nr = row + o[0];
+                        int nc = col + o[1];
+                        if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) {
+                            break;
+                        }
+                        if (map[nr][nc] == BLOCK) {
+                            offset = (offset + 1) % OFFSETS.length;
+                        } else {
+                            row = nr;
+                            col = nc;
+                        }
+                    }
+                    map[r][c] = UNBLOCK;
+                }
+            }
+        }
+        System.out.println(loops);
     }
 
-    record Position (int row, int col) {}
-    record State (int row, int col, int offset) {}
+    record Position(int row, int col) {
+    }
+
+    record State(int row, int col, int offset) {
+    }
 }

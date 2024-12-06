@@ -1,7 +1,8 @@
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+
+import util.Strings;
 
 public class Day06 {
     private static final char GUARD = '^';
@@ -20,42 +21,40 @@ public class Day06 {
     public static void main(String[] args) throws IOException {
         var input = Path.of("input.txt");
 
-        try (var lines = Files.lines(input)) {
-            var map = lines.map(String::toCharArray).toArray(char[][]::new);
+        var map = Strings.matrix(input);
 
-            var guard = Guard.start(map);
-            //
-            // Part 1
-            //
-            var visited = new HashSet<Position>();
+        var guard = Guard.start(map);
+        //
+        // Part 1
+        //
+        var visited = new HashSet<Position>();
+        visited.add(guard.position());
+        while (guard.move()) {
             visited.add(guard.position());
-            while (guard.move()) {
-                visited.add(guard.position());
-            }
-            System.out.println(visited.size());
-            //
-            // Part 2
-            //
-            int loops = 0;
-            for (int r = 0; r < map.length; r++) {
-                for (int c = 0; c < map[0].length; c++) {
-                    if (map[r][c] == UNBLOCK) {
-                        map[r][c] = BLOCK;
-                        var states = new HashSet<State>();
-                        guard.restart();
-                        while (guard.move()) {
-                            if (!states.add(guard.state())) {
-                                loops++;
-                                break;
-                            }
+        }
+        System.out.println(visited.size());
+        //
+        // Part 2
+        //
+        int loops = 0;
+        for (int r = 0; r < map.length; r++) {
+            for (int c = 0; c < map[0].length; c++) {
+                if (map[r][c] == UNBLOCK) {
+                    map[r][c] = BLOCK;
+                    var states = new HashSet<State>();
+                    guard.restart();
+                    while (guard.move()) {
+                        if (!states.add(guard.state())) {
+                            loops++;
+                            break;
                         }
-                        map[r][c] = UNBLOCK;
                     }
+                    map[r][c] = UNBLOCK;
                 }
             }
-
-            System.out.println(loops);
         }
+
+        System.out.println(loops);
     }
 
     record Position(int row, int col) {

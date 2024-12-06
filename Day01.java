@@ -1,20 +1,21 @@
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import util.Numbers;
 
 public class Day01 {
     public static void main(String[] args) throws IOException {
         var input = Path.of("input.txt");
+
         var left = new ArrayList<Integer>();
         var right = new ArrayList<Integer>();
-        try (var lines = Files.lines(input)) {
-            for (var line : lines.toList()) {
-                var locations = line.split("\s+");
-                left.add(Integer.parseInt(locations[0]));
-                right.add(Integer.parseInt(locations[1]));
-            }
+        for (var line : Numbers.list(input)) {
+            left.add(line.get(0));
+            right.add(line.get(1));
         }
+
         left.sort(null);
         right.sort(null);
         long sum = 0;
@@ -26,7 +27,6 @@ public class Day01 {
             var rn = r.next();
             h.compute(rn, (_, v) -> v == null ? 1 : v + 1);
             var diff = Math.abs(ln - rn);
-            System.out.println(diff);
             sum += diff;
         }
         long score = 0;

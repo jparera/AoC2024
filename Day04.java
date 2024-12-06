@@ -1,27 +1,26 @@
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+
+import util.Strings;
 
 public class Day04 {
     private static final char[] XMAS = "XMAS".toCharArray();
 
     public static void main(String[] args) throws IOException {
         var path = Path.of("input.txt");
-        try (var lines = Files.lines(path)) {
-            char[][] map = lines.map(String::toCharArray).toArray(char[][]::new);
-            var cols = map.length;
-            var rows = map[0].length;
-            int part1 = 0;
-            int part2 = 0;
-            for (int r = 0; r < rows; r++) {
-                for (int c = 0; c < cols; c++) {
-                    part1 += xmas(r, c, map);
-                    part2 += crossmas(r, c, map);
-                }
+        var map = Strings.matrix(path);
+        var cols = map.length;
+        var rows = map[0].length;
+        int part1 = 0;
+        int part2 = 0;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                part1 += xmas(r, c, map);
+                part2 += crossmas(r, c, map);
             }
-            System.out.println(part1);
-            System.out.println(part2);
         }
+        System.out.println(part1);
+        System.out.println(part2);
     }
 
     private static int crossmas(int r, int c, char[][] map) {

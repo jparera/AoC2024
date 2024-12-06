@@ -1,9 +1,10 @@
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
+import util.Strings;
 
 public class Day03 {
     private static Pattern PART1 = Pattern.compile("mul\\((\\d{1,3}),(\\d{1,3})\\)");
@@ -12,39 +13,37 @@ public class Day03 {
 
     public static void main(String[] args) throws IOException {
         var path = Path.of("input.txt");
+
+        var lines = Strings.list(path);
         //
         // Part 1
         //
-        try (var lines = Files.lines(path)) {
-            var sum = lines.flatMap(Day03::part1).mapToLong(Mul::eval).sum();
-            System.out.println(sum);
-        }
+        var part1 = lines.stream().flatMap(Day03::part1).mapToLong(Mul::eval).sum();
+        System.out.println(part1);
         //
         // Part 2
         //
-        try (var lines = Files.lines(path)) {
-            var sum = 0L;
-            var enabled = true;
-            var ops = lines.flatMap(Day03::part2).toList();
-            for (var op : ops) {
-                switch (op) {
-                    case Enable _:
-                        enabled = true;
-                        break;
-                    case Disable _:
-                        enabled = false;
-                        break;
-                    case Mul mul:
-                        if (enabled) {
-                            sum += mul.eval();
-                        }
-                        break;
-                    default:
-                        throw new IllegalStateException();
-                }
+        var part2 = 0L;
+        var enabled = true;
+        var ops = lines.stream().flatMap(Day03::part2).toList();
+        for (var op : ops) {
+            switch (op) {
+                case Enable _:
+                    enabled = true;
+                    break;
+                case Disable _:
+                    enabled = false;
+                    break;
+                case Mul mul:
+                    if (enabled) {
+                        part2 += mul.eval();
+                    }
+                    break;
+                default:
+                    throw new IllegalStateException();
             }
-            System.out.println(sum);
         }
+        System.out.println(part2);
     }
 
     private static Stream<Mul> part1(String line) {

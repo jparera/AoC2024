@@ -1,30 +1,26 @@
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
-import java.util.stream.IntStream;
+
+import util.Numbers;
 
 public class Day02 {
-    private static Pattern NUMBER = Pattern.compile("\\d+");
-
     public static void main(String[] args) throws IOException {
         var path = Path.of("input.txt");
-        try (var lines = Files.lines(path)) {
-            System.out.println(lines.map(Day02::part1).filter(v -> v).count());
-        }
-        try (var lines = Files.lines(path)) {
-            System.out.println(lines.map(Day02::part2).filter(v -> v).count());
-        }
+
+        var lines = Numbers.array(path);
+
+        var part1 = lines.stream().map(Day02::part1).filter(v -> v).count();
+        var part2 = lines.stream().map(Day02::part2).filter(v -> v).count();
+
+        System.out.println(part1);
+        System.out.println(part2);
     }
 
-    private static boolean part1(String line) {
-        var levels = numbers(line).toArray();
+    private static boolean part1(int[] levels) {
         return safe(levels);
     }
 
-    private static boolean part2(String line) {
-        var levels = numbers(line).toArray();
+    private static boolean part2(int[] levels) {
         if (safe(levels)) {
             return true;
         }
@@ -57,9 +53,5 @@ public class Day02 {
             }
         }
         return (increasing == 0 || increasing == levels.length - 1) && diff == levels.length - 1;
-    }
-
-    private static IntStream numbers(String line) {
-        return NUMBER.matcher(line).results().map(MatchResult::group).mapToInt(Integer::parseInt);
     }
 }
