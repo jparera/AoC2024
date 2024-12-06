@@ -2,27 +2,25 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import util.Numbers;
+import util.Sets;
 import util.Strings;
 
 public class Day05 {
     public static void main(String[] args) throws IOException {
         var input = Path.of("input.txt");
-
         var blocks = Strings.blocks(input);
-
         // Rules
         var lt = new HashMap<Integer, Set<Integer>>();
         var gt = new HashMap<Integer, Set<Integer>>();
         for (var rule : Numbers.array(blocks.get(0))) {
-            lt.computeIfAbsent(rule[0], _ -> new HashSet<Integer>()).add(rule[1]);
-            gt.computeIfAbsent(rule[1], _ -> new HashSet<Integer>()).add(rule[0]);
+            lt.computeIfAbsent(rule[0], Sets::computeHashSet).add(rule[1]);
+            gt.computeIfAbsent(rule[1], Sets::computeHashSet).add(rule[0]);
         }
         // Updates
         var updates = Numbers.array(blocks.get(1));
