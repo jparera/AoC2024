@@ -19,14 +19,14 @@ public class Day07 {
     }
 
     private static boolean valid1(long[] values) {
-        return valid1(values, 2, values[1]);
+        return valid(values, 2, values[1], false);
     }
 
     private static boolean valid2(long[] values) {
-        return valid2(values, 2, values[1]);
+        return valid(values, 2, values[1], true);
     }
 
-    private static boolean valid1(long[] values, int i, long result) {
+    private static boolean valid(long[] values, int i, long result, boolean part2) {
         if (i >= values.length) {
             return result == values[0];
         }
@@ -34,27 +34,16 @@ public class Day07 {
             return false;
         }
         var valid = false;
-        if (valid |= valid1(values, i + 1, result + values[i]))
+        if (valid |= valid(values, i + 1, result + values[i], part2))
             return true;
-        if (valid |= valid1(values, i + 1, result * values[i]))
+        if (valid |= valid(values, i + 1, result * values[i], part2))
+            return true;
+        if (part2 && (valid |= valid(values, i + 1, concat(result, values[i]), part2)))
             return true;
         return false;
     }
 
-    private static boolean valid2(long[] values, int i, long result) {
-        if (i >= values.length) {
-            return result == values[0];
-        }
-        if (result > values[0]) {
-            return false;
-        }
-        var valid = false;
-        if (valid |= valid2(values, i + 1, result + values[i]))
-            return true;
-        if (valid |= valid2(values, i + 1, result * values[i]))
-            return true;
-        if (valid |= valid2(values, i + 1, Long.parseLong(Long.toString(result) + values[i])))
-            return true;
-        return false;
+    private static long concat(long v1, long v2) {
+        return Long.parseLong(Long.toString(v1) + v2);
     }
 }
