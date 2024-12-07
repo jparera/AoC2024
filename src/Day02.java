@@ -7,7 +7,7 @@ public class Day02 {
     public static void main(String[] args) throws IOException {
         var path = Path.of("input02.txt");
 
-        var lines = Lines.asNumberArrays(path);
+        var lines = Lines.asIntArrays(path);
 
         var part1 = lines.stream().map(Day02::part1).filter(v -> v).count();
         var part2 = lines.stream().map(Day02::part2).filter(v -> v).count();

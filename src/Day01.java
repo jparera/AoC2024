@@ -11,7 +11,7 @@ public class Day01 {
 
         var left = new ArrayList<Integer>();
         var right = new ArrayList<Integer>();
-        for (var line : Lines.asNumberLists(input)) {
+        for (var line : Lines.asIntegerLists(input)) {
             left.add(line.get(0));
             right.add(line.get(1));
         }
