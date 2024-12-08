@@ -1,10 +1,10 @@
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.stream.Collectors;
 
 import util.Lines;
+import util.Lines.CharElement;
+import util.Lines.Position;
 import util.Terminal;
 
 public class Day08 {
@@ -14,71 +14,47 @@ public class Day08 {
         var terminal = Terminal.get();
         var input = Path.of("input08.txt");
 
-        var map = Lines.asCharMatrix(input);
-        var rows = map.length;
-        var cols = map[0].length;
+        var matrix = Lines.asCharMatrixElements(input);
 
-        var antennas = new HashMap<Character, List<Position>>();
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                if (map[r][c] != EMPTY) {
-                    antennas.computeIfAbsent(map[r][c], _ -> new ArrayList<>()).add(new Position(r, c));
-                }
-            }
-        }
+        var antennas = matrix.elements().stream()
+                .filter(e -> e.value() != EMPTY)
+                .collect(Collectors.groupingBy(CharElement::value,
+                        Collectors.mapping(CharElement::position, Collectors.toList())));
 
         var antinodes1 = new HashSet<Position>();
         var antinodes2 = new HashSet<Position>();
-        for (var entry : antennas.entrySet()) {
-            var frequencyAntennas = entry.getValue().toArray(Position[]::new);
-            var len = frequencyAntennas.length;
+
+        antennas.values().forEach(positions -> {
+            var len = positions.size();
             for (int i = 0; i < len; i++) {
                 for (int j = 0; j < len; j++) {
-                    if (i < j) {
-                        var a1 = frequencyAntennas[i];
-                        var a2 = frequencyAntennas[j];
+                    if (i == j) {
+                        continue;
+                    }
+                    var a1 = positions.get(i);
+                    var a2 = positions.get(j);
 
-                        int dr = a2.row - a1.row;
-                        int dc = a2.col - a1.col;
+                    var diff = a2.substract(a1);
 
-                        int a1r = a2.row + dr;
-                        int a1c = a2.col + dc;
+                    var antinode = a2.add(diff);
 
-                        int a2r = a1.row - dr;
-                        int a2c = a1.col - dc;
+                    if (matrix.contains(antinode)) {
+                        antinodes1.add(antinode);
+                    }
 
-                        if (a1r >= 0 && a1r < rows && a1c >= 0 && a1c < cols) {
-                            antinodes1.add(new Position(a1r, a1c));
-                        }
-                        if (a2r >= 0 && a2r < rows && a2c >= 0 && a2c < cols) {
-                            antinodes1.add(new Position(a2r, a2c));
-                        }
-
-                        antinodes2.add(new Position(a1.row, a1.col));
-                        antinodes2.add(new Position(a2.row, a2.col));
-
-                        while (a1r >= 0 && a1r < rows && a1c >= 0 && a1c < cols) {
-                            antinodes2.add(new Position(a1r, a1c));
-                            a1r += dr;
-                            a1c += dc;
-                        }
-                        while (a2r >= 0 && a2r < rows && a2c >= 0 && a2c < cols) {
-                            antinodes2.add(new Position(a2r, a2c));
-                            a2r -= dr;
-                            a2c -= dc;
-                        }
+                    antinodes2.add(a2);
+                    while (matrix.contains(antinode)) {
+                        antinodes2.add(antinode);
+                        antinode = antinode.add(diff);
                     }
                 }
             }
-        }
+        });
 
         var part1 = antinodes1.size();
         var part2 = antinodes2.size();
 
         terminal.printf("%d\n", part1);
         terminal.printf("%d\n", part2);
-    }
-
-    record Position(int row, int col) {
     }
 }
