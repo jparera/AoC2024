@@ -239,6 +239,11 @@ public class Terminal {
         return this;
     }
 
+    public Terminal println(String text) {
+        output.print(text + System.lineSeparator());
+        return this;
+    }
+
     private Terminal execute(Job job) {
         output.print(job.toString());
         return this;
