@@ -239,7 +239,7 @@ public class Terminal {
         return this;
     }
 
-    public Terminal println(String text) {
+    public Terminal println(Object text) {
         output.print(text + System.lineSeparator());
         return this;
     }

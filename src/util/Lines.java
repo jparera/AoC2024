@@ -5,8 +5,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 public class Lines {
     public static List<List<String>> asBlocks(Path file) throws IOException {
@@ -97,12 +99,22 @@ public class Lines {
         }
     }
 
+    public static List<String[]> asStringArrays(Path file, Pattern delimiter) throws IOException {
+        try (var lines = Files.lines(file)) {
+            return lines.map(delimiter::split).toList();
+        }
+    }
+
     public static List<List<Integer>> asIntegerLists(Path file) throws IOException {
         return asIntArrays(file).stream().map(l -> IntStream.of(l).boxed().toList()).toList();
     }
 
     public static List<List<Long>> asLongLists(Path file) throws IOException {
         return asLongArrays(file).stream().map(l -> LongStream.of(l).boxed().toList()).toList();
+    }
+
+    public static List<List<String>> asStringLists(Path file, Pattern delimiter) throws IOException {
+        return asStringArrays(file, delimiter).stream().map(l -> Stream.of(l).toList()).toList();
     }
 
     public record Position(int row, int col) {
@@ -122,19 +134,24 @@ public class Lines {
     }
 
     public record CharElement(Position position, long value) {
-
     }
 
-    public static class Matrix<E> {
+    public record ObjectElement<T>(Position position, T value) {
+    }
+
+    public static class Matrix<E, T> {
         private int rows;
 
         private int cols;
 
+        private T[] arrays;
+
         private List<E> elements;
 
-        Matrix(int rows, int cols, List<E> elements) {
+        Matrix(int rows, int cols, T[] arrays, List<E> elements) {
             this.rows = rows;
             this.cols = cols;
+            this.arrays = arrays;
             this.elements = new ArrayList<>(elements);
         }
 
@@ -150,47 +167,36 @@ public class Lines {
             return cols;
         }
 
+        public T[] arrays() {
+            return arrays;
+        }
+
         public List<E> elements() {
             return elements;
         }
     }
 
-    public static class IntMatrix extends Matrix<IntElement> {
-        private int[][] matrix;
-
-        public IntMatrix(int rows, int cols, int[][] matrix, List<IntElement> elements) {
-            super(rows, cols, elements);
-            this.matrix = matrix;
-        }
-
-        public int[][] matrix() {
-            return matrix;
+    public static class IntMatrix extends Matrix<IntElement, int[]> {
+        public IntMatrix(int rows, int cols, int[][] arrays, List<IntElement> elements) {
+            super(rows, cols, arrays, elements);
         }
     }
 
-    public static class LongMatrix extends Matrix<LongElement> {
-        private long[][] matrix;
-
-        public LongMatrix(int rows, int cols, long[][] matrix, List<LongElement> elements) {
-            super(rows, cols, elements);
-            this.matrix = matrix;
-        }
-
-        public long[][] matrix() {
-            return matrix;
+    public static class LongMatrix extends Matrix<LongElement, long[]> {
+        public LongMatrix(int rows, int cols, long[][] arrays, List<LongElement> elements) {
+            super(rows, cols, arrays, elements);
         }
     }
 
-    public static class CharMatrix extends Matrix<CharElement> {
-        private char[][] matrix;
-
-        public CharMatrix(int rows, int cols, char[][] matrix, List<CharElement> elements) {
-            super(rows, cols, elements);
-            this.matrix = matrix;
+    public static class CharMatrix extends Matrix<CharElement, char[]> {
+        public CharMatrix(int rows, int cols, char[][] arrays, List<CharElement> elements) {
+            super(rows, cols, arrays, elements);
         }
+    }
 
-        public char[][] matrix() {
-            return matrix;
+    public static class ObjectMatrix<T> extends Matrix<ObjectElement<T>, T[]> {
+        public ObjectMatrix(int rows, int cols, T[][] arrays, List<ObjectElement<T>> elements) {
+            super(rows, cols, arrays, elements);
         }
     }
 }
