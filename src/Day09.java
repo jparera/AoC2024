@@ -37,36 +37,26 @@ public class Day09 {
         var fs = fs(diskmap);
 
         var len = diskmap.length;
-
-        var ids = new int[len];
-        var size = new int[len];
         var offset = new int[len];
+        var length = new int[len];
         int blocks = 0;
-        for (int i = 0, id = 1; i < len;) {
-            ids[i] = id++;
-            size[i] = diskmap[i] - '0';
+        for (int i = 0; i < len; i++) {
             offset[i] = blocks;
-            blocks += size[i++];
-            if (i < len) {
-                size[i] = diskmap[i] - '0';
-                offset[i] = blocks;
-                blocks += size[i++];
-            }
+            length[i] = diskmap[i] - '0';
+            blocks += length[i];
         }
 
         for (int i = (len / 2) * 2; i >= 0; i -= 2) {
-            int s = size[i];
-            int id = ids[i];
+            int il = length[i];
+            int id = (i >> 1) + 1;
             for (int j = 1; j < i; j += 2) {
-                if (s <= size[j]) {
-                    for (int k = 0; k < s; k++) {
+                if (il <= length[j]) {
+                    for (int k = 0; k < il; k++) {
                         fs[offset[i] + k] = 0;
-                    }
-                    for (int k = 0; k < s; k++) {
                         fs[offset[j] + k] = id;
                     }
-                    size[j] -= s;
-                    offset[j] += s;
+                    length[j] -= il;
+                    offset[j] += il;
                     break;
                 }
             }
@@ -77,20 +67,15 @@ public class Day09 {
     private static int[] fs(char[] diskmap) {
         int len = diskmap.length;
         int blocks = 0;
-        for (int i = 0; i < len;) {
-            blocks += diskmap[i++] - '0';
-            if (i < len) {
-                blocks += diskmap[i++] - '0';
-            }
+        for (int i = 0; i < len; i++) {
+            blocks += diskmap[i] - '0';
         }
         var fs = new int[blocks];
-        for (int i = 0, b = 0, id = 1; i < len; id++) {
-            int count = diskmap[i++] - '0';
+        for (int i = 0, j = 0; i < len; i++) {
+            int count = diskmap[i] - '0';
+            int id = i % 2 == 0 ? (i >> 1) + 1 : 0;
             while (count-- > 0) {
-                fs[b++] = id;
-            }
-            if (i < len) {
-                b += diskmap[i++] - '0';
+                fs[j++] = id;
             }
         }
         return fs;
@@ -100,7 +85,7 @@ public class Day09 {
         var checksum = 0L;
         for (int i = 0; i < fs.length; i++) {
             if (fs[i] != 0) {
-                checksum += i * (fs[i] - 1);
+                checksum += i * (fs[i] - 1L);
             }
         }
         return checksum;
