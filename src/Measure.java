@@ -19,7 +19,7 @@ public class Measure {
         int day = Integer.parseInt(args[args.length - 1]);
         var solution = Objects.requireNonNull(SOLUTIONS[day - 1]);
 
-        out.printf("Day %02d solution measurement\n", day);
+        out.printf("Day %02d solution benchmarking\n", day);
 
         out.print("Warming up...");
         var warmupLoops = Math.min(Math.max(loops / 10, 3), 100);
