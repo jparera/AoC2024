@@ -133,7 +133,7 @@ public class Lines {
     public record LongElement(Position position, long value) {
     }
 
-    public record CharElement(Position position, long value) {
+    public record CharElement(Position position, char value) {
     }
 
     public record ObjectElement<T>(Position position, T value) {
