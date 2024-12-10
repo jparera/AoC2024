@@ -24,20 +24,20 @@ To run a solution:
 java src/DayXX.java
 ```
 
-**Benchmarking the Solutions:**
+## Benchmarking
 
-`src/Measure.java' provides a simple way to measure the performance of a puzzle solution. It offers the following features:
+`src/Measure.java` provides a simple way to measure the performance of a puzzle solution. It offers the following features:
 
 * **Configurable Iterations:** Customize the number of iterations to fine-tune your benchmarks.
 * **Warmup Phase:** Ensures accurate measurements by running a warmup phase to eliminate initial overhead.
 * **Human-Readable Output:** Displays results in clear units (seconds, milliseconds, microseconds, etc.) for easy interpretation.
 * **Modular Design:** Easily add new solutions to be benchmarked by implementing the `Solution` interface.
 
-## Parameters
+**Parameters**
 
 * **--loops:** Specifies the number of iterations for the benchmark. Default: 10.
 
-## How to Use
+**How to Use**
 
 1. **Implement Your Solution:** Create a class that implements the `Solution` interface and define its `call` method to execute your solution logic.
 2. **Add Your Solution to `SOLUTIONS`:** Add your solution class to the `SOLUTIONS` array in the `Measure` class.
