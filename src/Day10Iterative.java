@@ -29,9 +29,6 @@ public class Day10Iterative {
         while (!stack.isEmpty()) {
             var position = stack.pop();
             var value = map.get(position);
-            if (value == null) {
-                continue;
-            }
             if (value == '0') {
                 part1 += peaks.size();
                 peaks = new HashSet<Position>();
