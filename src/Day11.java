@@ -1,9 +1,8 @@
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import util.Lines;
 import util.Terminal;
@@ -23,30 +22,45 @@ public class Day11 {
     }
 
     private static long simulate(List<String> stones, int blinks) {
-        var counts = stones.stream()
-                .collect(Collectors.groupingBy(v -> v, Collectors.counting()));
-        while (blinks-- > 0) {
-            counts = counts.entrySet().stream()
-                    .flatMap(Day11::transform)
-                    .collect(Collectors.groupingBy(
-                            Map.Entry::getKey,
-                            Collectors.summingLong(Map.Entry::getValue)));
+        var counts = new HashMap<Long, long[]>();
+        for (var stone : stones) {
+            counts.computeIfAbsent(Long.parseLong(stone), _ -> new long[1])[0]++;
         }
-        return counts.values().stream().mapToLong(Long::longValue).sum();
+        var memo = new HashMap<Long, List<Long>>();
+        while (blinks-- > 0) {
+            var next = new HashMap<Long, long[]>();
+            counts.entrySet().forEach(entry -> {
+                var stone = entry.getKey();
+                var count = entry.getValue();
+                transform(stone, memo).forEach(t -> {
+                    next.computeIfAbsent(t, _ -> new long[1])[0] += count[0];
+                });
+            });
+            counts = next;
+        }
+        return counts.values().stream().mapToLong(c -> c[0]).sum();
     }
 
-    private static Stream<Map.Entry<String, Long>> transform(Map.Entry<String, Long> stone) {
-        var number = stone.getKey();
-        var count = stone.getValue();
-        if ("0".equals(number)) {
-            return Stream.of(Map.entry("1", count));
-        } else if (number.length() % 2 == 0) {
-            var mid = number.length() >> 1;
-            var left = Long.toString(Long.parseLong(number.substring(0, mid)));
-            var right = Long.toString(Long.parseLong(number.substring(mid)));
-            return Stream.of(Map.entry(left, count), Map.entry(right, count));
-        } else {
-            return Stream.of(Map.entry(Long.toString(Long.parseLong(number) * 2024), count));
+    private static List<Long> transform(long stone, Map<Long, List<Long>> memo) {
+        var cached = memo.get(stone);
+        if (cached != null) {
+            return cached;
         }
+        List<Long> output;
+        if (stone == 0) {
+            output = List.of(1L);
+        } else {
+            var digits = Long.toString(stone);
+            if (digits.length() % 2 == 0) {
+                var mid = digits.length() >> 1;
+                var left = Long.parseLong(digits.substring(0, mid));
+                var right = Long.parseLong(digits.substring(mid));
+                output = List.of(left, right);
+            } else {
+                output = List.of(stone * 2024);
+            }
+        }
+        memo.put(stone, output);
+        return output;
     }
 }
