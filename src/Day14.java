@@ -102,7 +102,7 @@ public class Day14 {
 
         public static Robot of(String line) {
             var v = Numbers.asIntStream(line).toArray();
-            return new Robot(new Position( v[0], v[1] ), new Position(v[2], v[3]));
+            return new Robot(new Position(v[0], v[1]), new Position(v[2], v[3]));
         }
 
         private Position move(int t) {
