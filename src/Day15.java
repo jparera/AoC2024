@@ -23,7 +23,7 @@ public class Day15 {
 
     public static void main(String[] args) throws IOException {
         var terminal = Terminal.get();
-        var input = Path.of("test.txt");
+        var input = Path.of("input15.txt");
 
         terminal.println(part1(input));
         terminal.println(part2(input));
@@ -179,7 +179,7 @@ public class Day15 {
                     }
                     if (!visited.containsKey(next) && isBigBox(next, map)) {
                         visited.put(next, map[next.row()][next.col()]);
-                        stack.add(next);
+                        stack.push(next);
                     }
                 }
             }
