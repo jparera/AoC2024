@@ -39,29 +39,25 @@ public class Day16 {
         record Frame(Vertex v, int distance) {
         }
 
-        var visited = new HashSet<Vertex>();
+        var part1 = Integer.MAX_VALUE;
         var dstart = new HashMap<Vertex, Integer>();
+        var dend = new HashMap<Vertex, Integer>();
+
         var queue = new PriorityQueue<Frame>((l, r) -> Integer.compare(l.distance(), r.distance()));
         queue.offer(new Frame(start, 0));
 
-        var part1 = Integer.MAX_VALUE;
         while (!queue.isEmpty()) {
             var f = queue.poll();
             var v = f.v();
 
-            if (!dstart.containsKey(v)) {
-                dstart.put(v, f.distance());
+            if (dstart.containsKey(v)) {
+                continue;
             }
+            dstart.put(v, f.distance());
 
             if (v.p().equals(end)) {
                 part1 = Math.min(part1, f.distance());
-                continue;
             }
-
-            if (visited.contains(v)) {
-                continue;
-            }
-            visited.add(v);
 
             var vf = v.forward(map);
             if (!vf.isWall(map)) {
@@ -73,8 +69,6 @@ public class Day16 {
             }
         }
 
-        visited = new HashSet<Vertex>();
-        var dend = new HashMap<Vertex, Integer>();
         queue = new PriorityQueue<Frame>((l, r) -> Integer.compare(l.distance(), r.distance()));
         for (var d : Direction.values()) {
             queue.offer(new Frame(new Vertex(end, d), 0));
@@ -84,14 +78,10 @@ public class Day16 {
             var f = queue.poll();
             var v = f.v();
 
-            if (!dend.containsKey(v)) {
-                dend.put(v, f.distance());
-            }
-
-            if (visited.contains(v)) {
+            if (dend.containsKey(v)) {
                 continue;
             }
-            visited.add(v);
+            dend.put(v, f.distance());
 
             var vf = v.backward(map);
             if (!vf.isWall(map)) {
@@ -128,7 +118,7 @@ public class Day16 {
 
         private static Set<Direction> ROTATIONS_N = Set.of(E, W);
         private static Set<Direction> ROTATIONS_S = Set.of(W, E);
-        private static Set<Direction> ROTATIONS_E = Set.of(N, S);
+        private static Set<Direction> ROTATIONS_E = Set.of(S, N);
         private static Set<Direction> ROTATIONS_W = Set.of(N, S);
 
         private int row;
