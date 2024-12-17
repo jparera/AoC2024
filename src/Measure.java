@@ -10,7 +10,7 @@ public class Measure {
             Day01::main, Day02::main, Day03::main, Day04::main, Day05::main,
             Day06::main, Day07::main, Day08::main, Day09::main, Day10::main,
             Day11::main, Day12::main, Day13::main, Day14::main, Day15::main,
-            Day16::main,
+            Day16::main, Day17::main,
     };
 
     public static void main(String[] args) throws Exception {
